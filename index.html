@@ -480,7 +480,8 @@
             showPage('home-page');
         });
     </script>
-    <script type="module">
+    <script>
+    // Khai báo Firebase ngay trong script chính (không cần module nữa)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
@@ -497,18 +498,47 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Gán hàm vào window để script thường gọi được
-    window.saveOrder = async function(orderData) {
+    // Hàm lưu đơn hàng (đã bỏ export, dùng được ngay)
+    async function saveOrder(orderData) {
         try {
-            const docRef = await addDoc(collection(db, "orders"), orderData);
-            console.log("Đơn hàng lưu thành công, ID: ", docRef.id);
-            return true;
+            await addDoc(collection(db, "orders"), orderData);
+            console.log("Đơn hàng đã được lưu thành công!");
         } catch (error) {
-            console.error("Lỗi lưu đơn hàng: ", error);
-            alert("Có lỗi khi gửi đơn hàng, bạn vui lòng chụp màn hình giỏ hàng và inbox Fanpage nhé!");
-            return false;
+            console.error("Lỗi lưu đơn hàng:", error);
+            alert("Có lỗi khi gửi đơn hàng. Vui lòng chụp màn hình Console (F12) gửi Kendy & Sally nhé!");
         }
-    };
+    }
+
+    // Phần còn lại của bạn giữ nguyên, chỉ thêm dòng này vào cuối phần submit form:
+    document.addEventListener('DOMContentLoaded', () => {
+        // ... (toàn bộ code cũ của bạn giữ nguyên đến phần checkoutForm)
+
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (checkoutForm.checkValidity()) {
+                    const customerData = {
+                        fullName: document.getElementById("fullName").value,
+                        phone: document.getElementById("phone").value,
+                        email: document.getElementById("email").value,
+                        address: document.getElementById("address").value,
+                        cart: cart,
+                        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+                        createdAt: new Date().toLocaleString('vi-VN')
+                    };
+
+                    await saveOrder(customerData);  // Giờ chạy ngon!
+
+                    clearCart();
+                    showPage("success-page");
+                    checkoutForm.reset();
+                } else {
+                    checkoutForm.reportValidity();
+                }
+            });
+        }
+        // ... phần còn lại giữ nguyên
+    });
 </script>
 </body>
 </html>
