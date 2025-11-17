@@ -497,15 +497,18 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Hàm lưu đơn hàng
-    export async function saveOrder(orderData) {
+    // Gán hàm vào window để script thường gọi được
+    window.saveOrder = async function(orderData) {
         try {
-            await addDoc(collection(db, "orders"), orderData);
-            console.log("Đơn hàng đã được lưu!");
+            const docRef = await addDoc(collection(db, "orders"), orderData);
+            console.log("Đơn hàng lưu thành công, ID: ", docRef.id);
+            return true;
         } catch (error) {
-            console.error("Lỗi lưu đơn hàng:", error);
+            console.error("Lỗi lưu đơn hàng: ", error);
+            alert("Có lỗi khi gửi đơn hàng, bạn vui lòng chụp màn hình giỏ hàng và inbox Fanpage nhé!");
+            return false;
         }
-    }
+    };
 </script>
 </body>
 </html>
