@@ -444,29 +444,21 @@
 
             // Checkout form submission
             if (checkoutForm) {
-            checkoutForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (checkoutForm.checkValidity()) {
-                    const customerData = {
-                        fullName: document.getElementById("fullName").value,
-                        phone: document.getElementById("phone").value,
-                        email: document.getElementById("email").value,
-                        address: document.getElementById("address").value,
-                        cart: cart,
-                        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-                        createdAt: new Date().toLocaleString('vi-VN')
-                    };
+                checkoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-                    await saveOrder(customerData);  // Giờ chạy ngon!
+    if (checkoutForm.checkValidity()) {
 
-                    clearCart();
-                    showPage("success-page");
-                    checkoutForm.reset();
-                } else {
-                    checkoutForm.reportValidity();
-                }
-            });
-        }
+        // Lấy dữ liệu form
+        const customerData = {
+            fullName: document.getElementById("fullName").value,
+            phone: document.getElementById("phone").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value,
+            cart: cart,
+            total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+            createdAt: new Date(),
+        };
 
         // Lưu vào Firestore
         await saveOrder(customerData);
@@ -488,8 +480,7 @@
             showPage('home-page');
         });
     </script>
-    <script>
-    // Khai báo Firebase ngay trong script chính (không cần module nữa)
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
@@ -506,46 +497,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Hàm lưu đơn hàng (đã bỏ export, dùng được ngay)
-    async function saveOrder(orderData) {
+    // Hàm lưu đơn hàng
+    export async function saveOrder(orderData) {
         try {
             await addDoc(collection(db, "orders"), orderData);
-            console.log("Đơn hàng đã được lưu thành công!");
+            console.log("Đơn hàng đã được lưu!");
         } catch (error) {
             console.error("Lỗi lưu đơn hàng:", error);
-            alert("Có lỗi khi gửi đơn hàng. Vui lòng chụp màn hình Console (F12) gửi Kendy & Sally nhé!");
         }
     }
-    // Phần còn lại của bạn giữ nguyên, chỉ thêm dòng này vào cuối phần submit form:
-    document.addEventListener('DOMContentLoaded', () => {
-        // ... (toàn bộ code cũ của bạn giữ nguyên đến phần checkoutForm)
-
-        if (checkoutForm) {
-            checkoutForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (checkoutForm.checkValidity()) {
-                    const customerData = {
-                        fullName: document.getElementById("fullName").value,
-                        phone: document.getElementById("phone").value,
-                        email: document.getElementById("email").value,
-                        address: document.getElementById("address").value,
-                        cart: cart,
-                        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-                        createdAt: new Date().toLocaleString('vi-VN')
-                    };
-
-                    await saveOrder(customerData);  // Giờ chạy ngon!
-
-                    clearCart();
-                    showPage("success-page");
-                    checkoutForm.reset();
-                } else {
-                    checkoutForm.reportValidity();
-                }
-            });
-        }
-        // ... phần còn lại giữ nguyên
-    });
 </script>
 </body>
 </html>
