@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage - Nhà Kendy & Sally</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fdfaf6;
+            --text-color: #5c5552;
+            --primary-color: #a1887f;
+            --primary-hover: #8d6e63;
+            --accent-color: #d7ccc8;
+            --header-bg: #efebe9;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .vintage-btn {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            transition: all 0.3s ease;
+        }
+        .vintage-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        .vintage-btn-secondary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        .vintage-btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .add-to-cart-btn.added {
+            background-color: #689f38;
+            transform: scale(1.05);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        .form-input {
+            border-color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(161, 136, 127, 0.2);
+            outline: none;
+        }
+        .cart-item-enter {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .cart-item-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .cart-item-exit {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .cart-item-exit-active {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="app-container" class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <a href="#" id="logo-link" class="text-2xl md:text-3xl font-serif font-bold text-gray-800 tracking-wider">
+                        Vintage
+                    </a>
+                    <div class="flex items-center">
+                        <a href="#" id="cart-icon-link" class="relative p-2 text-gray-600 hover:text-gray-800 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            <span id="cart-badge" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full hidden">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Homepage -->
+            <section id="home-page" class="page active fade-in">
+                <!-- Hero Banner -->
+                <div class="relative bg-gray-800 h-96 md:h-[500px] flex items-center justify-center text-center text-white overflow-hidden">
+                    <div class="relative z-10 p-4">
+                        <h1 class="text-4xl md:text-6xl font-serif font-bold mb-4">Khám Phá Mùi Hương</h1>
+                        <p class="text-lg md:text-xl max-w-2xl mx-auto">Mỗi chai nước hoa là một câu chuyện, một ký ức được cất giữ.</p>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div class="py-12 md:py-20 bg-white">
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <h2 class="text-3xl md:text-4xl font-serif text-center mb-10">Sản Phẩm Nổi Bật</h2>
+                        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+                            <!-- Product cards will be injected here by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Us Section -->
+                <div class="py-12 md:py-20 bg-[var(--bg-color)]">
+                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl">
+                        <h2 class="text-3xl md:text-4xl font-serif mb-6">Câu Chuyện Của Chúng Mình</h2>
+                        <p class="text-lg mb-4 font-serif italic">Chào mừng bạn ghé thăm tiệm nước hoa "Vintage" Nhà Kendy & Sally – một tiệm nước hoa được xây dựng bởi hai người bạn thân cùng chung đam mê và ước mơ khởi nghiệp.</p>
+                        <p class="text-base leading-relaxed">Chúng mình bắt đầu hành trình này với mong muốn tạo ra một không gian nhỏ xinh, ấm áp và đầy cảm hứng – nơi mỗi mùi hương không chỉ là sản phẩm, mà còn là một câu chuyện và một trải nghiệm. Tại Nhà Kendy & Sally, mỗi sản phẩm gửi đến bạn đều được chăm chút từ trái tim, với hy vọng lan tỏa niềm vui, sự tự tin và phong cách riêng qua từng mùi hương.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shopping Cart Page -->
+            <section id="cart-page" class="page">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 fade-in">
+                    <h1 class="text-3xl md:text-4xl font-serif mb-8">Giỏ Hàng Của Bạn</h1>
+                    <div id="cart-container" class="bg-white p-4 sm:p-8 rounded-lg shadow-lg">
+                        <!-- Cart items will be injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Checkout Page -->
+            <section id="checkout-page" class="page">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 fade-in">
+                    <h1 class="text-3xl md:text-4xl font-serif mb-8">Thanh Toán</h1>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                        <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-lg shadow-lg">
+                            <h2 class="text-2xl font-serif mb-6">Thông tin giao hàng</h2>
+                            <form id="checkout-form" novalidate>
+                                <div class="grid grid-cols-1 gap-6">
+                                    <div>
+                                        <label for="fullName" class="block text-sm font-medium text-gray-700">Họ và tên</label>
+                                        <input type="text" id="fullName" name="fullName" class="mt-1 block w-full rounded-md form-input shadow-sm" required>
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-sm font-medium text-gray-700">Số điện thoại (sử dụng Zalo)</label>
+                                        <input type="tel" id="phone" name="phone" class="mt-1 block w-full rounded-md form-input shadow-sm" required pattern="[0-9]{10}">
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                        <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md form-input shadow-sm" required>
+                                    </div>
+                                    <div>
+                                        <label for="address" class="block text-sm font-medium text-gray-700">Địa chỉ nhận hàng</label>
+                                        <textarea id="address" name="address" rows="3" class="mt-1 block w-full rounded-md form-input shadow-sm" required></textarea>
+                                    </div>
+                                    <div class="pt-4">
+                                        <button type="submit" class="w-full vintage-btn py-3 px-4 rounded-md font-semibold text-lg">Đặt Hàng</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-1">
+                            <div id="checkout-summary" class="bg-white p-6 sm:p-8 rounded-lg shadow-lg">
+                                <h2 class="text-2xl font-serif mb-6">Đơn hàng của bạn</h2>
+                                <!-- Checkout summary will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Order Success Page -->
+            <section id="success-page" class="page">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center fade-in">
+                    <div class="max-w-2xl mx-auto bg-white p-8 sm:p-12 rounded-lg shadow-lg">
+                        <svg class="w-16 h-16 mx-auto mb-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h1 class="text-3xl md:text-4xl font-serif mb-4">Đặt hàng thành công!</h1>
+                        <p class="text-lg mb-8">Cảm ơn bạn đã đặt hàng. Nhân viên sẽ liên hệ qua Zalo để xác nhận đơn hàng.</p>
+                        <button id="back-to-home-btn" class="vintage-btn py-3 px-8 rounded-md font-semibold">Quay lại trang chủ</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-[var(--header-bg)] text-[var(--text-color)]">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+                <p class="font-serif text-xl mb-2">"Vintage" Nhà Kendy & Sally</p>
+                <p class="text-sm">Chúc bạn luôn tỏa hương theo cách của riêng mình!</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [
+                { id: 1, name: "Gỗ Hoàng Hôn", description: "Hương gỗ trầm ấm áp, huyền bí và sang trọng.", price: 250000, volume: "10ml", image: "image/1.jpg" },
+                { id: 2, name: "Hoa Damask", description: "Nốt hương hoa hồng tinh tế, lãng mạn và cổ điển.", price: 220000, volume: "10ml", image: "image/2.jpg" },
+                { id: 3, name: "Biển Xanh", description: "Tươi mát và sảng khoái như một ngày dạo biển.", price: 190000, volume: "10ml", image: "image/3.jpg" },
+                { id: 4, name: "Vani & Cream", description: "Ngọt ngào, quyến rũ với một chút phong trần, gai góc.", price: 280000, volume: "10ml", image: "image/4.jpg" },
+                { id: 5, name: "Cam Bergamot Tươi", description: "Sự khởi đầu đầy năng lượng và hứng khởi để làm việc bạn thích.", price: 180000, volume: "10ml", image: "image/5.jpg" },
+                { id: 6, name: "Làn Khói Bí Ẩn", description: "Hương khói và da thuộc, dành cho người cá tính.", price: 260000, volume: "10ml", image: "image/6.jpg" }
+            ];
+
+            let cart = JSON.parse(localStorage.getItem('vintagePerfumeCart')) || [];
+
+            const pages = document.querySelectorAll('.page');
+            const productGrid = document.getElementById('product-grid');
+            const cartContainer = document.getElementById('cart-container');
+            const cartBadge = document.getElementById('cart-badge');
+            const checkoutForm = document.getElementById('checkout-form');
+            const checkoutSummaryContainer = document.getElementById('checkout-summary');
+
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            };
+
+            const showPage = (pageId) => {
+                pages.forEach(page => {
+                    page.classList.remove('active', 'fade-in');
+                });
+                const targetPage = document.getElementById(pageId);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                    // Trigger reflow to restart animation
+                    void targetPage.offsetWidth;
+                    targetPage.classList.add('fade-in');
+                }
+                window.scrollTo(0, 0);
+            };
+
+            const updateCartIcon = () => {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                if (totalItems > 0) {
+                    cartBadge.textContent = totalItems;
+                    cartBadge.classList.remove('hidden');
+                } else {
+                    cartBadge.classList.add('hidden');
+                }
+            };
+            
+            const saveCart = () => {
+                localStorage.setItem('vintagePerfumeCart', JSON.stringify(cart));
+            };
+
+            const addToCart = (productId) => {
+                const product = products.find(p => p.id === productId);
+                const cartItem = cart.find(item => item.id === productId);
+
+                if (cartItem) {
+                    cartItem.quantity++;
+                } else {
+                    cart.push({ ...product, quantity: 1 });
+                }
+                saveCart();
+                updateCartIcon();
+                renderCart();
+            };
+
+            const updateQuantity = (productId, change) => {
+                const cartItem = cart.find(item => item.id === productId);
+                if (cartItem) {
+                    cartItem.quantity += change;
+                    if (cartItem.quantity <= 0) {
+                        removeFromCart(productId);
+                    } else {
+                        saveCart();
+                        renderCart();
+                        updateCartIcon();
+                    }
+                }
+            };
+
+            const removeFromCart = (productId) => {
+                cart = cart.filter(item => item.id !== productId);
+                saveCart();
+                renderCart();
+                updateCartIcon();
+            };
+            
+            const clearCart = () => {
+                cart = [];
+                saveCart();
+                updateCartIcon();
+            };
+
+            const renderProducts = () => {
+                if (!productGrid) return;
+                productGrid.innerHTML = products.map(product => `
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-serif font-semibold mb-2">${product.name}</h3>
+                            <p class="text-gray-600 text-sm mb-3">${product.description}</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-gray-500">${product.volume}</span>
+                                <span class="text-lg font-bold text-[var(--primary-hover)]">${formatCurrency(product.price)}</span>
+                            </div>
+                            <button data-product-id="${product.id}" class="add-to-cart-btn w-full vintage-btn py-2 px-4 rounded-md font-semibold transition-all duration-300">Thêm vào giỏ hàng</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const productId = parseInt(e.target.dataset.productId);
+                        addToCart(productId);
+                        
+                        e.target.classList.add('added');
+                        e.target.textContent = 'Đã thêm!';
+                        setTimeout(() => {
+                            e.target.classList.remove('added');
+                            e.target.textContent = 'Thêm vào giỏ hàng';
+                        }, 1500);
+                    });
+                });
+            };
+
+            const renderCart = () => {
+                if (!cartContainer) return;
+                if (cart.length === 0) {
+                    cartContainer.innerHTML = `
+                        <div class="text-center py-12">
+                            <p class="text-xl mb-4">Giỏ hàng của bạn đang trống.</p>
+                            <button id="continue-shopping-btn" class="vintage-btn py-3 px-6 rounded-md font-semibold">Tiếp tục mua sắm</button>
+                        </div>
+                    `;
+                    document.getElementById('continue-shopping-btn').addEventListener('click', () => showPage('home-page'));
+                    return;
+                }
+
+                const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+                cartContainer.innerHTML = `
+                    <div class="space-y-6">
+                        ${cart.map(item => `
+                            <div class="flex items-center justify-between gap-4 border-b pb-4 cart-item">
+                                <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md">
+                                <div class="flex-grow">
+                                    <h3 class="font-semibold">${item.name}</h3>
+                                    <p class="text-sm text-gray-600">${formatCurrency(item.price)}</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button data-product-id="${item.id}" class="quantity-btn-decr w-8 h-8 rounded-full border vintage-btn-secondary">-</button>
+                                    <span class="w-8 text-center">${item.quantity}</span>
+                                    <button data-product-id="${item.id}" class="quantity-btn-incr w-8 h-8 rounded-full border vintage-btn-secondary">+</button>
+                                </div>
+                                <div class="text-right font-semibold w-24">
+                                    ${formatCurrency(item.price * item.quantity)}
+                                </div>
+                                <button data-product-id="${item.id}" class="remove-item-btn text-gray-400 hover:text-red-500 transition-colors">&times;</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="mt-8 pt-6 border-t">
+                        <div class="flex justify-end items-center mb-4">
+                            <span class="text-lg">Tạm tính:</span>
+                            <span class="text-xl font-bold ml-4">${formatCurrency(subtotal)}</span>
+                        </div>
+                        <div class="flex justify-end items-center">
+                            <span class="text-lg">Tổng cộng:</span>
+                            <span class="text-2xl font-bold ml-4 text-[var(--primary-hover)]">${formatCurrency(subtotal)}</span>
+                        </div>
+                        <div class="flex justify-end mt-8">
+                            <button id="checkout-btn" class="vintage-btn py-3 px-8 rounded-md font-semibold text-lg">Thanh toán</button>
+                        </div>
+                    </div>
+                `;
+                
+                renderCheckoutSummary();
+
+                cartContainer.querySelectorAll('.quantity-btn-decr').forEach(btn => btn.addEventListener('click', e => updateQuantity(parseInt(e.target.dataset.productId), -1)));
+                cartContainer.querySelectorAll('.quantity-btn-incr').forEach(btn => btn.addEventListener('click', e => updateQuantity(parseInt(e.target.dataset.productId), 1)));
+                cartContainer.querySelectorAll('.remove-item-btn').forEach(btn => btn.addEventListener('click', e => removeFromCart(parseInt(e.target.dataset.productId))));
+                document.getElementById('checkout-btn').addEventListener('click', () => showPage('checkout-page'));
+            };
+            
+            const renderCheckoutSummary = () => {
+                if (!checkoutSummaryContainer) return;
+                if (cart.length === 0) {
+                    checkoutSummaryContainer.innerHTML = '<p>Không có sản phẩm nào trong giỏ hàng.</p>';
+                    return;
+                }
+                
+                const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+                
+                checkoutSummaryContainer.innerHTML = `
+                    <h2 class="text-2xl font-serif mb-6">Đơn hàng của bạn</h2>
+                    <div class="space-y-4">
+                        ${cart.map(item => `
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start gap-3">
+                                    <img src="${item.image}" class="w-12 h-12 rounded object-cover">
+                                    <div>
+                                        <p class="font-medium">${item.name}</p>
+                                        <p class="text-sm text-gray-500">Số lượng: ${item.quantity}</p>
+                                    </div>
+                                </div>
+                                <p class="font-medium">${formatCurrency(item.price * item.quantity)}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="border-t my-6"></div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span>Tạm tính</span>
+                            <span>${formatCurrency(subtotal)}</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold">
+                            <span>Tổng cộng</span>
+                            <span>${formatCurrency(subtotal)}</span>
+                        </div>
+                    </div>
+                `;
+            };
+
+            // Event Listeners for navigation
+            document.getElementById('logo-link').addEventListener('click', (e) => { e.preventDefault(); showPage('home-page'); });
+            document.getElementById('cart-icon-link').addEventListener('click', (e) => { e.preventDefault(); renderCart(); showPage('cart-page'); });
+            document.getElementById('back-to-home-btn').addEventListener('click', () => showPage('home-page'));
+
+            // Checkout form submission
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (checkoutForm.checkValidity()) {
+                        clearCart();
+                        showPage('success-page');
+                        checkoutForm.reset();
+                    } else {
+                        checkoutForm.reportValidity();
+                    }
+                });
+            }
+
+            // Initial Load
+            renderProducts();
+            updateCartIcon();
+            showPage('home-page');
+        });
+    </script>
+</body>
+</html>
