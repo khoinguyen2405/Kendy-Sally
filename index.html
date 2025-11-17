@@ -444,16 +444,34 @@
 
             // Checkout form submission
             if (checkoutForm) {
-                checkoutForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    if (checkoutForm.checkValidity()) {
-                        clearCart();
-                        showPage('success-page');
-                        checkoutForm.reset();
-                    } else {
-                        checkoutForm.reportValidity();
-                    }
-                });
+                checkoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (checkoutForm.checkValidity()) {
+
+        // Lấy dữ liệu form
+        const customerData = {
+            fullName: document.getElementById("fullName").value,
+            phone: document.getElementById("phone").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value,
+            cart: cart,
+            total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+            createdAt: new Date(),
+        };
+
+        // Lưu vào Firestore
+        await saveOrder(customerData);
+
+        clearCart();
+        showPage("success-page");
+        checkoutForm.reset();
+
+    } else {
+        checkoutForm.reportValidity();
+    }
+});
+
             }
 
             // Initial Load
@@ -462,5 +480,32 @@
             showPage('home-page');
         });
     </script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz-xq-SgbS572OUFOBYDqgSCEBi0W48ZE",
+        authDomain: "kendysally-a83a2.firebaseapp.com",
+        projectId: "kendysally-a83a2",
+        storageBucket: "kendysally-a83a2.firebasestorage.app",
+        messagingSenderId: "871345652218",
+        appId: "1:871345652218:web:ba80d64b04ab26e7f82443",
+        measurementId: "G-E7BYRVLJQV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Hàm lưu đơn hàng
+    export async function saveOrder(orderData) {
+        try {
+            await addDoc(collection(db, "orders"), orderData);
+            console.log("Đơn hàng đã được lưu!");
+        } catch (error) {
+            console.error("Lỗi lưu đơn hàng:", error);
+        }
+    }
+</script>
 </body>
 </html>
