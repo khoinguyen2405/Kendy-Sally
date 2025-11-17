@@ -444,21 +444,29 @@
 
             // Checkout form submission
             if (checkoutForm) {
-                checkoutForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+            checkoutForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (checkoutForm.checkValidity()) {
+                    const customerData = {
+                        fullName: document.getElementById("fullName").value,
+                        phone: document.getElementById("phone").value,
+                        email: document.getElementById("email").value,
+                        address: document.getElementById("address").value,
+                        cart: cart,
+                        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+                        createdAt: new Date().toLocaleString('vi-VN')
+                    };
 
-    if (checkoutForm.checkValidity()) {
+                    await saveOrder(customerData);  // Giờ chạy ngon!
 
-        // Lấy dữ liệu form
-        const customerData = {
-            fullName: document.getElementById("fullName").value,
-            phone: document.getElementById("phone").value,
-            email: document.getElementById("email").value,
-            address: document.getElementById("address").value,
-            cart: cart,
-            total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-            createdAt: new Date(),
-        };
+                    clearCart();
+                    showPage("success-page");
+                    checkoutForm.reset();
+                } else {
+                    checkoutForm.reportValidity();
+                }
+            });
+        }
 
         // Lưu vào Firestore
         await saveOrder(customerData);
@@ -508,7 +516,6 @@
             alert("Có lỗi khi gửi đơn hàng. Vui lòng chụp màn hình Console (F12) gửi Kendy & Sally nhé!");
         }
     }
-
     // Phần còn lại của bạn giữ nguyên, chỉ thêm dòng này vào cuối phần submit form:
     document.addEventListener('DOMContentLoaded', () => {
         // ... (toàn bộ code cũ của bạn giữ nguyên đến phần checkoutForm)
